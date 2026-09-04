@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Пошаговая инструкция по подключению корпоративной почты к Яндекс 360: Outlook, Thunderbird, The Bat!, Apple Mail и веб-почта.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="light">
+  <title>Настройка почты · Помощь сотрудникам</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./config.js" defer></script>
+  <script src="./guides.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#setup">Перейти к настройке</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="На главную">
+        <span class="brand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></span>
+        <span><strong data-organization>Почта компании</strong><small>Помощь сотрудникам</small></span>
+      </a>
+      <nav aria-label="Разделы страницы"><a class="nav-active" href="#setup">Инструкция</a><a href="#parameters">Параметры</a><a href="#help">Не получилось?</a></nav>
+      <a class="button button-emergency header-mail" href="https://mail.yandex.ru/" data-webmail target="_blank" rel="noopener noreferrer">Открыть почту <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main id="top" class="page-shell">
+    <section class="intro" aria-labelledby="page-title">
+      <div class="eyebrow"><span class="status-dot" aria-hidden="true"></span>Переходим на Яндекс 360</div>
+      <h1 id="page-title">Ваша почта.<br><span>На новом месте.</span></h1>
+      <p>Адрес остался прежним. Подключите новый ящик<br class="desktop-break"> к привычной программе — мы поможем на каждом шаге.</p>
+    </section>
+
+    <div class="workspace">
+      <div class="primary-column">
+        <section id="setup" class="panel setup-panel" aria-labelledby="setup-title">
+          <div class="section-heading"><div><span class="overline">НАЧНЁМ С ВАШЕГО УСТРОЙСТВА</span><h2 id="setup-title">Настроим почту вместе</h2></div><span class="section-mark" aria-hidden="true">01 / 03</span></div>
+          <form id="setup-form">
+            <fieldset><legend><span class="legend-number">1</span>Какая у вас операционная система?</legend>
+              <div class="os-options choice-group">
+                <label class="os-choice"><input type="radio" name="os" value="windows" checked><span><span class="os-symbol" aria-hidden="true">⊞</span>Windows</span></label>
+                <label class="os-choice"><input type="radio" name="os" value="macos"><span><span class="os-symbol apple-symbol" aria-hidden="true">●</span>macOS</span></label>
+                <label class="os-choice"><input type="radio" name="os" value="linux"><span><span class="os-symbol terminal-symbol" aria-hidden="true">&gt;_</span>Linux</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="client-fieldset"><legend><span class="legend-number">2</span>Где вы читаете почту?</legend>
+              <div id="client-options" class="client-options choice-group"></div>
+              <p id="client-availability" class="field-hint">Выберите почтовую программу.</p>
+            </fieldset>
+            <fieldset id="outlook-version" hidden><legend class="small-legend">Какой у вас Outlook?</legend><div class="version-options choice-group">
+              <label><input type="radio" name="outlook" value="classic" checked><span>Классический <small>Обычное меню «Файл»</small></span></label>
+              <label><input type="radio" name="outlook" value="new"><span>Новый Outlook <small>Есть пометка «new»</small></span></label>
+            </div></fieldset>
+            <fieldset id="protocol-fieldset"><legend><span class="legend-number">3</span>Как был подключён старый ящик?</legend>
+              <div class="protocol-options choice-group">
+                <label><input type="radio" name="protocol" value="imap"><span><strong>IMAP</strong><small>Письма на сервере</small></span></label>
+                <label><input type="radio" name="protocol" value="pop3"><span><strong>POP3</strong><small>Письма на компьютере</small></span></label>
+                <label><input type="radio" name="protocol" value="unknown" checked><span><strong>Не знаю</strong><small>Поможем разобраться</small></span></label>
+              </div>
+              <details class="inline-details"><summary>Где посмотреть тип подключения?</summary><p id="protocol-detection">Выберите программу — здесь появится подсказка. Если сомневаетесь, оставьте «Не знаю».</p><p>Если указано Exchange или Microsoft 365, оставьте «Не знаю» и обратитесь в ИТ-службу перед изменением профиля.</p></details>
+            </fieldset>
+            <div id="protocol-notice" class="notice notice-amber"><span class="notice-icon" aria-hidden="true">!</span><div><strong>Сохраним старую переписку</strong><p>Если тип подключения неизвестен, оставьте старую учётную запись и добавьте новый ящик отдельно.</p></div></div>
+            <div class="setup-actions"><span id="selection-caption">Инструкция под вашу программу</span><button type="submit" id="show-guide" class="button button-primary" disabled>Показать инструкцию <span aria-hidden="true">→</span></button></div>
+          </form>
+          <noscript><div class="notice notice-amber"><div><strong>Включите JavaScript для пошаговой инструкции.</strong><p>Параметры подключения, помощь и ссылка на веб-почту доступны ниже. Не удаляйте старый аккаунт: в нём могут быть локальные письма.</p></div></div></noscript>
+        </section>
+
+        <section id="guide" class="panel guide-panel" aria-labelledby="guide-title" hidden tabindex="-1">
+          <div class="section-heading"><div><span class="overline" id="guide-context"></span><h2 id="guide-title">Ваша инструкция</h2></div><button id="change-selection" class="text-button" type="button">Изменить выбор ↑</button></div>
+          <div id="guide-safety"></div>
+          <div class="guide-progress"><span id="progress-label">Выполнено 0 шагов</span><progress id="guide-progress" max="5" value="0" aria-label="Прогресс настройки"></progress></div>
+          <div id="guide-steps"></div>
+          <div id="guide-complete" class="notice notice-green" hidden><span class="notice-icon" aria-hidden="true">✓</span><div><strong>Вы прошли все шаги</strong><p>Если тестовое письмо отправляется и приходит, настройка завершена. Сохраните старый аккаунт до проверки всей переписки.</p></div></div>
+          <p class="guide-footer">Названия пунктов могут отличаться в вашей версии. <a id="client-source" href="https://yandex.ru/support/yandex-360/business/mail/ru/mail-clients" target="_blank" rel="noopener noreferrer">Справка по программе ↗</a></p>
+        </section>
+      </div>
+
+      <aside class="secondary-column" aria-label="Быстрый доступ и параметры">
+        <section class="webmail-card" aria-labelledby="webmail-title"><div class="card-overline"><span class="tiny-envelope" aria-hidden="true">↗</span>ЕСЛИ ПОЧТА НУЖНА ПРЯМО СЕЙЧАС</div><h2 id="webmail-title">Работайте<br>через браузер</h2><p>Пока настраиваете программу, почтой можно пользоваться на сайте Яндекса.</p><a href="https://mail.yandex.ru/" data-webmail target="_blank" rel="noopener noreferrer" class="button button-emergency">Перейти в веб-почту <span aria-hidden="true">↗</span></a><small>Вход с полным адресом и новым паролем</small></section>
+
+        <section id="parameters" class="panel parameters-panel" aria-labelledby="parameters-title">
+          <div class="parameters-heading"><h2 id="parameters-title">Параметры подключения</h2><span class="secure-badge" aria-label="Защищённое соединение">TLS</span></div>
+          <p class="field-hint">Для ручной настройки программы</p>
+          <div class="parameter-login"><span class="parameter-label">Логин — полный рабочий адрес</span><code data-email-example>name@company.ru</code><small>Замените пример на свой адрес</small></div>
+          <div class="server-group"><span class="parameter-label"><span aria-hidden="true">↓</span> Входящая почта · IMAP</span><div class="server-value"><code>imap.yandex.ru</code><button type="button" class="copy-button" data-copy="imap.yandex.ru" aria-label="Скопировать сервер IMAP"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 8V4H4v11h4"/></svg></button></div><div class="server-meta"><span>Порт <b>993</b></span><span>SSL/TLS</span></div></div>
+          <div class="server-group"><span class="parameter-label"><span aria-hidden="true">↑</span> Исходящая почта · SMTP</span><div class="server-value"><code>smtp.yandex.ru</code><button type="button" class="copy-button" data-copy="smtp.yandex.ru" aria-label="Скопировать сервер SMTP"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 8V4H4v11h4"/></svg></button></div><div class="server-meta"><span>Порт <b>465</b></span><span>SSL/TLS</span></div><p class="field-hint">Авторизация обязательна: тот же рабочий адрес и пароль приложения.</p></div>
+          <div class="password-note"><span aria-hidden="true">✳</span><p><strong>Нужен пароль приложения</strong>Создайте его в Яндекс ID для категории «Почта». Обычный пароль используйте для входа в браузере.</p></div>
+          <button type="button" id="copy-parameters" class="button button-outline">Скопировать все параметры <span aria-hidden="true">⧉</span></button>
+          <a class="source-link" href="https://yandex.ru/support/yandex-360/business/mail/ru/mail-clients/others" target="_blank" rel="noopener noreferrer">Параметры из справки Яндекса ↗</a>
+        </section>
+      </aside>
+    </div>
+
+    <section id="help" class="help-section" aria-labelledby="help-title">
+      <div class="help-intro"><span class="overline">МЫ РЯДОМ</span><h2 id="help-title">Не получилось?</h2><p>Начните с подсказки, которая подходит к вашей ситуации.</p><div class="support-card"><strong>Нужна помощь человека?</strong><p id="support-label">Свяжитесь с вашей ИТ-службой привычным способом.</p><a id="support-link" class="text-button" hidden target="_blank" rel="noopener noreferrer">Обратиться в ИТ-службу ↗</a><button id="copy-support" class="text-button" type="button">Скопировать описание проблемы <span aria-hidden="true">↗</span></button><small>Добавьте текст ошибки. Пароли не нужны.</small><textarea id="support-fallback" readonly hidden aria-label="Описание для ИТ-службы"></textarea></div></div>
+      <div class="faq-list">
+        <details><summary>Программа не принимает пароль<span aria-hidden="true">+</span></summary><p>Для ручной настройки нужен пароль приложения категории «Почта», созданный для рабочего аккаунта. Новый обычный пароль от ящика используйте в браузере. Проверьте полный адрес в логине и отсутствие пробелов при вставке.</p><p>Если вход через Яндекс (OAuth) настроен вашей ИТ-службой, следуйте её инструкции. Если создание пароля приложения недоступно, обратитесь к администратору.</p><a data-app-password href="https://id.yandex.ru/security/app-passwords" target="_blank" rel="noopener noreferrer">Открыть пароли приложений ↗</a></details>
+        <details><summary>Письма приходят, но не отправляются<span aria-hidden="true">+</span></summary><p>Проверьте SMTP: <code>smtp.yandex.ru</code>, порт <code>465</code>, SSL/TLS. Включите авторизацию с полным рабочим адресом и паролем приложения. Убедитесь, что в поле «От кого» выбран новый ящик.</p><p>Если в исходящих остались старые письма, сначала проверьте, не были ли они уже отправлены, чтобы не отправить их повторно.</p></details>
+        <details><summary>Не видно старых писем или папок<span aria-hidden="true">+</span></summary><p>Сравните переписку с веб-почтой. Если письмо есть в браузере, дождитесь синхронизации клиента и проверьте подписку на нужные папки.</p><p>Если письмо осталось только в старом аккаунте, не удаляйте его и не перемещайте архив самостоятельно. Локальные письма POP3, PST и папки «На моём компьютере» могли не попасть в миграцию. Попросите ИТ-службу проверить перенос.</p></details>
+        <details><summary>Сервер недоступен или ошибка сертификата<span aria-hidden="true">+</span></summary><p>Проверьте подключение к интернету, дату и время устройства, написание серверов и порты. Обновите почтовую программу. Не отключайте шифрование и проверку сертификатов.</p><p>Если веб-почта работает, а программа не подключается, сообщите ИТ-службе текст ошибки: возможно, в сети ограничены подключения к портам 993 и 465.</p></details>
+        <details><summary>Пишет «Такая учётная запись уже существует»<span aria-hidden="true">+</span></summary><p>Не удаляйте старую запись ради добавления новой. Если это POP3 или тип неизвестен, ИТ-служба поможет сохранить архив и создать отдельный профиль. Если старый ящик IMAP, сначала проверьте перенос писем, затем согласуйте изменение его серверов.</p><p>До завершения настройки работайте через веб-почту.</p></details>
+        <details><summary>Не получается войти даже в веб-почту<span aria-hidden="true">+</span></summary><p>Вводите полный рабочий адрес и новый пароль, выданный после миграции. Проверьте, что в браузере открыт рабочий аккаунт, а не личный Яндекс ID. Если организация использует единый вход, следуйте корпоративной странице авторизации.</p><p>Если вход всё ещё недоступен, попросите администратора проверить учётную запись и сбросить пароль. Пароль приложения для входа в браузере не подходит.</p></details>
+      </div>
+    </section>
+    <footer class="site-footer"><span><strong data-organization>Почта компании</strong> · Переход на Яндекс 360</span><span>Справка проверена 4 сентября 2026 <span class="footer-dot">·</span> <a href="https://yandex.ru/support/yandex-360/business/mail/ru/mail-clients" target="_blank" rel="noopener noreferrer">Справка Яндекса ↗</a></span></footer>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <div id="selection-status" class="sr-only" role="status" aria-live="polite"></div>
+</body>
+</html>
