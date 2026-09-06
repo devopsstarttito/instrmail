@@ -50,7 +50,6 @@
     $(".section-mark").textContent=client?(isWeb?"02 / 02":"03 / 03"):"01 / 03";
     if(!client){
       $("#selection-status").textContent=`Выбрано: ${names[state.os]}. Выберите программу — инструкция появится ниже.`;
-      $("#live-guide-hint").textContent="Выберите почтовую программу — инструкция появится ниже и будет обновляться автоматически.";
       $("#guide").hidden=true;
       $("#guide-complete").hidden=true;
       currentGuide=null;
@@ -58,7 +57,6 @@
       return;
     }
     $("#selection-status").textContent=`Инструкция обновлена: ${names[state.os]}, ${client.name}.`;
-    $("#live-guide-hint").textContent="Инструкция ниже обновляется автоматически при изменении выбора.";
     renderGuide();
   }
   function renderGuide() {
