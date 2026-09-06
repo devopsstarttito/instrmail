@@ -44,7 +44,6 @@
     const isWeb=state.client==="web";
     $("#outlook-version").hidden=state.client!=="outlook"||state.os!=="windows";
     $("#protocol-fieldset").hidden=isWeb;
-    $("#protocol-notice").outerHTML=`<div id="protocol-notice">${guides.safety(state)}</div>`;
     $("#protocol-detection").textContent=guides.detection(state);
     const client=guides.clients.find(item=>item.id===state.client);
     $(".section-mark").textContent=client?(isWeb?"02 / 02":"03 / 03"):"01 / 03";
