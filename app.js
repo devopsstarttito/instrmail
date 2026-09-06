@@ -8,6 +8,7 @@
   const esc=guides.escape;
   let currentGuide=null;
   let toastTimer;
+  let supportEdited=false;
   const names=guides.osNames;
   function selection() {
     return {os:form.querySelector('[name="os"]:checked').value,client:form.querySelector('[name="client"]:checked')?.value||"",protocol:form.querySelector('[name="protocol"]:checked').value,outlook:form.querySelector('[name="outlook"]:checked').value};
@@ -45,31 +46,38 @@
     $("#protocol-fieldset").hidden=isWeb;
     $("#protocol-notice").outerHTML=`<div id="protocol-notice">${guides.safety(state)}</div>`;
     $("#protocol-detection").textContent=guides.detection(state);
-    $("#show-guide").disabled=!state.client;
-    $("#show-guide").innerHTML=(isWeb?"Как войти в почту":"Показать инструкцию")+' <span aria-hidden="true">→</span>';
     const client=guides.clients.find(item=>item.id===state.client);
-    $("#selection-caption").textContent=client?`${names[state.os]} · ${client.name}`:"Инструкция под вашу программу";
     $(".section-mark").textContent=client?(isWeb?"02 / 02":"03 / 03"):"01 / 03";
-    $("#selection-status").textContent=client?`Выбрано: ${names[state.os]}, ${client.name}. Инструкция готова к открытию.`:`Выбрано: ${names[state.os]}. Выберите программу.`;
-    $("#guide").hidden=true;
-    $("#guide-complete").hidden=true;
-    $("#support-fallback").hidden=true;
-    currentGuide=null;
+    if(!client){
+      $("#selection-status").textContent=`Выбрано: ${names[state.os]}. Выберите программу — инструкция появится ниже.`;
+      $("#live-guide-hint").textContent="Выберите почтовую программу — инструкция появится ниже и будет обновляться автоматически.";
+      $("#guide").hidden=true;
+      $("#guide-complete").hidden=true;
+      currentGuide=null;
+      refreshSupportDraft();
+      return;
+    }
+    $("#selection-status").textContent=`Инструкция обновлена: ${names[state.os]}, ${client.name}.`;
+    $("#live-guide-hint").textContent="Инструкция ниже обновляется автоматически при изменении выбора.";
+    renderGuide();
   }
-  function showGuide() {
+  function renderGuide() {
     let result;
-    try {result=guides.build(selection(),config);} catch(error){toast(error.message);return;}
+    try {result=guides.build(selection(),config);} catch(error){
+      currentGuide=null;
+      $("#guide").hidden=true;
+      toast(error.message);
+      return;
+    }
     currentGuide=result;
     $("#guide-context").textContent=result.context;
     $("#guide-title").textContent=result.title;
     $("#guide-safety").innerHTML=result.safety;
     $("#client-source").href=result.source;
-    $("#guide-steps").innerHTML=result.steps.map((step,index)=>`<details class="guide-step" data-step="${index}" ${index===0?"open":""}><summary><span class="step-number" aria-hidden="true">${index+1}</span><span>${step.title}</span><span class="step-chevron" aria-hidden="true">⌄</span></summary><div class="step-content">${step.html}<label class="step-done"><input type="checkbox" data-done="${index}"><span>${step.done}</span></label></div></details>`).join("");
+    $("#guide-steps").innerHTML=result.steps.map((step,index)=>`<details class="guide-step" data-step="${index}" ${index===0?"open":""}><summary><span class="step-number" aria-hidden="true">${index+1}.</span><span>${step.title}</span><span class="step-chevron" aria-hidden="true">⌄</span></summary><div class="step-content">${step.html}<label class="step-done"><input type="checkbox" data-done="${index}"><span>${step.done}</span></label></div></details>`).join("");
     $("#guide-progress").max=result.steps.length;
-    updateProgress();
     $("#guide").hidden=false;
-    $("#guide").focus({preventScroll:true});
-    $("#guide").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+    updateProgress();
   }
   function updateProgress() {
     if(!currentGuide)return;
@@ -80,8 +88,9 @@
     $$(".guide-step").forEach((el,i)=>{
       const checked=el.querySelector("input").checked;
       el.classList.toggle("is-done",checked);
-      el.querySelector(".step-number").textContent=checked?"✓":String(i+1);
+      el.querySelector(".step-number").textContent=checked?"✓":`${i+1}.`;
     });
+    refreshSupportDraft();
   }
   async function copy(text) {
     if(navigator.clipboard&&window.isSecureContext) {
@@ -109,11 +118,25 @@
     const done=currentGuide?$$("[data-done]:checked").map(el=>Number(el.dataset.done)+1):[];
     return `Не удаётся настроить почту после перехода на Яндекс 360.\nОС: ${names[state.os]}\nПрограмма: ${client?.name||"не выбрана"}${state.client==="outlook"&&state.os==="windows"?` (${state.outlook==="new"?"новый":"классический"})`:""}\nСтарое подключение: ${state.client==="web"?"веб-почта, тип прежней программы не уточнялся":guides.protocolNames[state.protocol]}\nОтмечены шаги: ${done.join(", ")||"нет"}\n\nРабочий адрес: [добавьте свой адрес]\nВерсия почтовой программы: [укажите]\nВход в веб-почту: [работает / не работает]\nТекст ошибки: [вставьте]\nЧто уже пробовали: [опишите]\n\nПароли и коды подтверждения не прикладывайте.`;
   }
+  function resetSupportCopyStatus(message="") {
+    $("#copy-support").textContent="Скопировать обращение";
+    $("#support-copy-status").textContent=message;
+    $("#support-copy-status").removeAttribute("data-state");
+  }
+  function refreshSupportDraft() {
+    const field=$("#support-message");
+    if(!field.value)return;
+    if(!supportEdited){
+      field.value=supportText();
+      resetSupportCopyStatus();
+    }else{
+      resetSupportCopyStatus("Выбор или пройденные шаги изменились. Проверьте данные в сообщении перед отправкой.");
+    }
+  }
   form.addEventListener("change",event=>{
     if(event.target.name==="os")renderClients();
     updateSelection();
   });
-  form.addEventListener("submit",event=>{event.preventDefault();showGuide();});
   $("#change-selection").addEventListener("click",()=>{
     $("#setup").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
     form.querySelector('[name="os"]:checked').focus({preventScroll:true});
@@ -132,10 +155,57 @@
   $("#copy-parameters").addEventListener("click",async()=>{
     toast(await copy(parametersText())?"Параметры скопированы. Замените пример логина на свой адрес.":"Буфер обмена недоступен. Скопируйте параметры из блока вручную.");
   });
+  $("#prepare-support").addEventListener("click",()=>{
+    const panel=$("#support-composer");
+    const opening=panel.hidden;
+    panel.hidden=!opening;
+    $("#prepare-support").setAttribute("aria-expanded",String(opening));
+    $("#prepare-support").textContent=opening?"Скрыть обращение":"Подготовить обращение";
+    if(opening){
+      const field=$("#support-message");
+      if(!field.value)field.value=supportText();
+      field.focus({preventScroll:true});
+      panel.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"});
+    }
+  });
+  $("#support-message").addEventListener("input",()=>{
+    supportEdited=true;
+    resetSupportCopyStatus("Текст изменён. Скопируйте обновлённое сообщение перед отправкой.");
+  });
   $("#copy-support").addEventListener("click",async()=>{
-    const text=supportText();
-    if(await copy(text)){toast("Описание скопировано. Добавьте ошибку и отправьте в ИТ-службу.");}
-    else{const field=$("#support-fallback");field.value=text;field.hidden=false;field.focus();field.select();toast("Описание готово ниже. Выделите и скопируйте его вручную.");}
+    const field=$("#support-message");
+    const button=$("#copy-support");
+    const status=$("#support-copy-status");
+    const text=field.value;
+    if(!text.trim()){
+      resetSupportCopyStatus("Добавьте описание проблемы, затем скопируйте сообщение.");
+      field.focus();
+      return;
+    }
+    button.disabled=true;
+    button.textContent="Копируем обращение…";
+    status.textContent="Копируем обращение…";
+    status.removeAttribute("data-state");
+    try{
+      const copied=await copy(text);
+      if(field.value!==text){
+        resetSupportCopyStatus("Текст изменился во время копирования. Скопируйте обновлённое сообщение ещё раз.");
+      }else if(copied){
+        button.textContent="✓ Обращение скопировано";
+        status.textContent="Готово. Откройте ИТ-поддержку, вставьте сообщение в чат и отправьте.";
+        status.dataset.state="success";
+      }else{
+        resetSupportCopyStatus("Автоматическое копирование недоступно. Текст выделен: скопируйте его через меню браузера или Ctrl+C / ⌘C, затем вставьте в чат поддержки.");
+        field.focus();
+        field.select();
+      }
+    }catch(_){
+      resetSupportCopyStatus("Не удалось скопировать автоматически. Выделите сообщение и скопируйте его вручную.");
+      field.focus();
+      field.select();
+    }finally{
+      button.disabled=false;
+    }
   });
   applyConfig();
   renderClients();

@@ -20,7 +20,7 @@
     try { const url = new URL(value); return url.protocol === "https:" ? url.href : fallback; }
     catch (_) { return fallback; }
   }
-  const link = (url, text) => `<a href="${escape(safeUrl(url, "https://mail.yandex.ru/"))}" target="_blank" rel="noopener noreferrer">${text} ↗</a>`;
+  const link = (url, text) => `<a class="nowrap-link" href="${escape(safeUrl(url, "https://mail.yandex.ru/"))}" target="_blank" rel="noopener noreferrer">${text} ↗</a>`;
   const path = text => `<div class="path">${text}</div>`;
   const note = (title, body, kind="amber") => `<div class="notice notice-${kind}"><span class="notice-icon" aria-hidden="true">${kind==="amber"?"!":"i"}</span><div><strong>${title}</strong><p>${body}</p></div></div>`;
   const settings = `<div class="step-settings"><div><strong>Входящая · IMAP</strong><code>imap.yandex.ru</code>Порт 993 · SSL/TLS</div><div><strong>Исходящая · SMTP</strong><code>smtp.yandex.ru</code>Порт 465 · SSL/TLS</div></div><p>В обоих случаях логин — <strong>полный рабочий адрес</strong>, пароль — <strong>пароль приложения</strong>. Для SMTP обязательно включите авторизацию.</p>`;
