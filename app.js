@@ -5,6 +5,7 @@
   const guides=window.MailGuides;
   const config=window.MAIL_HELP_CONFIG || {};
   const form=$("#setup-form");
+  const wideHelp=window.matchMedia("(min-width: 1081px)");
   const esc=guides.escape;
   let currentGuide=null;
   let toastTimer;
@@ -130,6 +131,16 @@
       resetSupportCopyStatus("Выбор или пройденные шаги изменились. Проверьте данные в сообщении перед отправкой.");
     }
   }
+  function updateHelpLayout() {
+    const aside=$("#help-aside");
+    const faq=$(".faq-list");
+    const support=$(".support-card");
+    if(wideHelp.matches){
+      if(support.parentElement!==aside)aside.append(support);
+    }else if(support.previousElementSibling!==faq){
+      faq.after(support);
+    }
+  }
   form.addEventListener("change",event=>{
     if(event.target.name==="os")renderClients();
     updateSelection();
@@ -204,6 +215,8 @@
       button.disabled=false;
     }
   });
+  wideHelp.addEventListener("change",updateHelpLayout);
+  updateHelpLayout();
   applyConfig();
   renderClients();
   updateSelection();
